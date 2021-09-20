@@ -4,7 +4,7 @@ namespace Grupparbete1
 {
     class Program
     {
-        private static Game Game;
+        public static Game Game;
         static void Main(string[] args)
         {
             Game = new Game(80, 25);

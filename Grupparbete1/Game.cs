@@ -21,7 +21,12 @@ namespace Grupparbete1
 
         public void Run()
         {
+            ConsoleKey input;
 
+            while(true)
+            {
+                InputManager.ProcessInput(Console.ReadKey().Key);
+            }
         }
     }
 }

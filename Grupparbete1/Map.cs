@@ -23,6 +23,8 @@ namespace Grupparbete1
             Width = width;
             Height = height;
 
+            rng = new Random();
+
             TileGrid = new TileBase[width][];
             GameObjects = new List<Entity>();
 
@@ -31,24 +33,21 @@ namespace Grupparbete1
               TileGrid[x] = new TileBase[height];
             }
 
-            Player = new Player(0, 0, "Player");
-            rng = new Random();
-
-            Init();
+            Init();       
         }
 
         public void Init()
         {
             FillWithFloor();
-            CreatePlayer();
+            Player = CreatePlayer("Player");
             GameObjects.Add(Player);
             DrawMap();
         }
 
-        //public T GetEntityAtLoc<T>(int x, int y) where T : Entity 
-        //{
-        //    return GameObjects.Where(e => e.X == x && e.Y == y && e is T).FirstOrDefault() as T;
-        //}
+        public T GetEntityAtLoc<T>(int x, int y) where T : Entity 
+        {
+            return GameObjects.Where(e => e.X == x && e.Y == y && e is T).FirstOrDefault() as T;
+        }
 
         private void FillWithFloor()
         {
@@ -61,7 +60,7 @@ namespace Grupparbete1
             }
         }
 
-        private void CreatePlayer()
+        private Player CreatePlayer(string name)
         {
             int tempX;
             int tempY;
@@ -72,8 +71,7 @@ namespace Grupparbete1
                 tempY = rng.Next(Height);
             } while (!TileGrid[tempX][tempY].IsWalkable);
 
-            Player.X = tempX;
-            Player.Y = tempY;
+            return new Player(tempX, tempY, name);
         }
 
         public void DrawMap()
@@ -84,7 +82,9 @@ namespace Grupparbete1
             {               
                 for (int x = 0; x < Width; x++)
                 {
-                    sb.Append(TileGrid[x][y].Glyph);
+                    var entitiesAtLoc = GameObjects.Where(e => e.X == x && e.Y == y).ToList();
+
+                    sb.Append(entitiesAtLoc.Count > 0 ? entitiesAtLoc[0].Glyph : TileGrid[x][y].Glyph);
                 }
 
                 Console.SetCursorPosition(0, y);
