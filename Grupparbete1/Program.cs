@@ -10,6 +10,7 @@ namespace Grupparbete1
             Game = new Game(80, 25);
             Game.Init();
             Game.Run();
+            //test commmit
         }
     }
 }
