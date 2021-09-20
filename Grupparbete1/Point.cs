@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Grupparbete1
 {
+    /// <summary>
+    /// Representerar en uppsättning koordinater.
+    /// </summary>
     public struct Point
     { 
         public int X { get; }

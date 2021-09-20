@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Grupparbete1
 {
+    /// <summary>
+    /// Representerar en vägg. Går inte att gå på.
+    /// </summary>
     public class TileWall : TileBase
     {
         public TileWall() : base()

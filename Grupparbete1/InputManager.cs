@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Grupparbete1
 {
+    /// <summary>
+    /// Hanterar den input som kommer från spelaren i form av tangenttryckningar. Binder metoder till de tangenter som representerar dem, till exempel piltangenterna till att flytta på Player-objektet.
+    /// </summary>
     public static class InputManager
     {
+        /// <summary>
+        /// Binder en tangent till en förändring i koordinater, som sedan används i Actor.MoveBy för att flytta en Actor på spelkartan.
+        /// </summary>
         private static Dictionary<ConsoleKey, Point> DirectionPairs = new Dictionary<ConsoleKey, Point>()
         {
             { ConsoleKey.UpArrow, new Point(0, -1)},
@@ -16,6 +22,10 @@ namespace Grupparbete1
             { ConsoleKey.RightArrow, new Point(1, 0)}
         };
 
+        /// <summary>
+        /// Kontrollerar vilken tangent som spelaren tryckt på, och kör kod beroende på input.
+        /// </summary>
+        /// <param name="input">Den tangent som spelaren trycker på, via Console.ReadKey</param>
         public static void ProcessInput(ConsoleKey input)
         {
             if (DirectionPairs.Keys.Contains(input))
