@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Grupparbete1
 {
-    public class Player : Actor
+    public class Enemy : Actor
     {
-        public Player(int x, int y, string name) : base(x, y, name, '@', 15, 3, 3)
+        public Enemy(int x, int y, string name) : base(x, y, name, 'X', 10, 2, 10)
         {
-
+            
         }
     }
 }
