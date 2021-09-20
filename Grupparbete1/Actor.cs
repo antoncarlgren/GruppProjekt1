@@ -15,11 +15,14 @@ namespace Grupparbete1
 
         public bool MoveBy(int deltaX, int deltaY)
         {
-            if(Program.Game.GameMap.TileGrid[X + deltaX][Y + deltaY].IsWalkable)
+            if (X + deltaX > 0 && X + deltaX < Program.Game.GameMap.Width && Y + deltaY > 0 && Y + deltaY < Program.Game.GameMap.Height)
             {
-                X += deltaX;
-                Y += deltaY;
-                return true;
+                if (Program.Game.GameMap.TileGrid[X + deltaX][Y + deltaY].IsWalkable)
+                {
+                    X += deltaX;
+                    Y += deltaY;
+                    return true;
+                }
             }
 
             return false;
