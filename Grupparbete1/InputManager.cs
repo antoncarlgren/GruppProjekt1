@@ -29,9 +29,12 @@ namespace Grupparbete1
         public static void ProcessInput(ConsoleKey input)
         {
             if (DirectionPairs.Keys.Contains(input))
-            { 
+            {
                 Program.Game.GameMap.Player.MoveBy(DirectionPairs[input].X, DirectionPairs[input].Y);
-                Program.Game.GameMap.DrawMap();
+            }
+            else
+            {
+                return;
             }
         }
     }

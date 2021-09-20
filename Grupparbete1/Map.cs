@@ -163,8 +163,6 @@ namespace Grupparbete1
         /// </summary>
         public void DrawMap()
         {
-            //Console.Clear();
-
             // Används för att konstruera en stärng för varje rad som ska renderas.
             var sb = new StringBuilder();
 
@@ -174,10 +172,10 @@ namespace Grupparbete1
                 for (int x = 0; x < Width; x++)
                 {
                     // Kollar om det finns något GameObject med koordinaterna på rutan som ska renderas.
-                    var entityAtLoc = GameObjects.Where(e => e.X == x && e.Y == y).ToList();
+                    var gameObjectAtLoc = GetEntityAtLoc<GameObject>(x, y);
 
                     // Om det finns ett GameObject på koordinaterna så läggs objektets tecken till i StringBuildern. Om inte, så läggs tecknet för den rutan till.
-                    sb.Append(entityAtLoc.Count <= 0 ? TileGrid[x][y].Glyph : entityAtLoc[0].Glyph);
+                    sb.Append(gameObjectAtLoc is null ? TileGrid[x][y].Glyph : gameObjectAtLoc.Glyph);
                 }
 
                 // Flyttar pekaren till den rad som ska skrivas ut.
@@ -188,6 +186,24 @@ namespace Grupparbete1
 
                 // Återställer StringBuildern så att den kan användas igen för nästa rad.
                 sb.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Uppdaterar kartan när en Actors position ändras, så att det som visas för spelaren stämmer överrens med Actorns nya position.
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="lastLocation">Actorns förra position. Används för att uppdatera rutan med dess förra koordinater.</param>
+        public void UpdateAfterActorMove(Actor actor, Point lastLocation)
+        {
+            if (GameObjects.Contains(actor))
+            {
+                var gameObjectAtLoc = GetEntityAtLoc<GameObject>(lastLocation.X, lastLocation.Y);
+
+                Console.SetCursorPosition(lastLocation.X, lastLocation.Y);
+                Console.Write(gameObjectAtLoc is null ? TileGrid[lastLocation.X][lastLocation.Y].Glyph : gameObjectAtLoc.Glyph);
+                Console.SetCursorPosition(actor.X, actor.Y);
+                Console.Write(actor.Health > 0 ? actor.Glyph : TileGrid[actor.X][actor.Y].Glyph);
             }
         }
     }

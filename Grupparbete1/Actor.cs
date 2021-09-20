@@ -30,6 +30,7 @@ namespace Grupparbete1
                 else if (value < 0)
                 {
                     _health = 0;
+                    OnDeath();
                 }
                 else
                 {
@@ -84,6 +85,7 @@ namespace Grupparbete1
                     {
                         X += deltaX;
                         Y += deltaY;
+                        Program.Game.GameMap.UpdateAfterActorMove(this, new Point(X - deltaX, Y - deltaY));
                         return true;
                     }
                 }
@@ -102,12 +104,16 @@ namespace Grupparbete1
             if(attackRoll > defender.Defense)
             {
                 defender.Health -= Damage;
-
-                if(defender.Health <= 0)
-                {
-                    Program.Game.GameMap.GameObjects.Remove(defender);
-                }
             }
+        }
+
+        /// <summary>
+        /// Körs när en Actors Health når 0. Tar bort den från listan med GameObjects i Map-klassen, och uppdaterar det som visas på rutan med de koordinater som Actorn hade.
+        /// </summary>
+        private void OnDeath()
+        {
+            Program.Game.GameMap.UpdateAfterActorMove(this, new Point(X, Y));
+            Program.Game.GameMap.GameObjects.Remove(this);
         }
     }
 }
