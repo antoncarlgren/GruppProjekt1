@@ -14,6 +14,7 @@ namespace Grupparbete1.Tiles
         public TileWall() : base()
         {
             IsWalkable = false;
+            BlocksFOV = true;
             Glyph = '#';
         }
     }

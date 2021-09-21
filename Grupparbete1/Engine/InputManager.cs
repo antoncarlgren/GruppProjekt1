@@ -14,12 +14,12 @@ namespace Grupparbete1.Engine
         /// <summary>
         /// Binder en tangent till en förändring i koordinater, som sedan används i Actor.MoveBy för att flytta en Actor på spelkartan.
         /// </summary>
-        private static Dictionary<ConsoleKey, Point> DirectionPairs = new Dictionary<ConsoleKey, Point>()
+        private static Dictionary<ConsoleKey, Coord> DirectionPairs = new Dictionary<ConsoleKey, Coord>()
         {
-            { ConsoleKey.UpArrow, new Point(0, -1)},
-            { ConsoleKey.DownArrow, new Point(0, 1)},
-            { ConsoleKey.LeftArrow, new Point(-1, 0)},
-            { ConsoleKey.RightArrow, new Point(1, 0)}
+            { ConsoleKey.UpArrow, new Coord(0, -1)},
+            { ConsoleKey.DownArrow, new Coord(0, 1)},
+            { ConsoleKey.LeftArrow, new Coord(-1, 0)},
+            { ConsoleKey.RightArrow, new Coord(1, 0)}
         };
 
         /// <summary>

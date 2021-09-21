@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 namespace Grupparbete1.Tiles
 {
     /// <summary>
-    /// Representerar en golvruta, som går at gå på.
+    /// Representerar en golvruta, som går att gå på.
     /// </summary>
     public class TileFloor : TileBase
     {
         public TileFloor() : base()
         {
             IsWalkable = true;
+            BlocksFOV = false;
             Glyph = '.';
         }
     }

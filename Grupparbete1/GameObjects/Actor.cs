@@ -85,7 +85,7 @@ namespace Grupparbete1.GameObjects
                     {
                         X += deltaX;
                         Y += deltaY;
-                        Program.Game.GameMap.UpdateAfterActorMove(this, new Point(X - deltaX, Y - deltaY));
+                        Program.Game.GameMap.UpdateAfterActorMove(this, new Coord(X - deltaX, Y - deltaY));
                         return true;
                     }
                 }
@@ -112,7 +112,7 @@ namespace Grupparbete1.GameObjects
         /// </summary>
         private void OnDeath()
         {
-            Program.Game.GameMap.UpdateAfterActorMove(this, new Point(X, Y));
+            Program.Game.GameMap.UpdateAfterActorMove(this, new Coord(X, Y));
             Program.Game.GameMap.GameObjects.Remove(this);
         }
     }

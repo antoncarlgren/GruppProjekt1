@@ -8,7 +8,7 @@ namespace Grupparbete1
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-            Game = new Game(80, 25);
+            Game = new Game(100, 18);
             Game.Init();
             Game.Run();
         }

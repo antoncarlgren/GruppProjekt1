@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Grupparbete1.Engine;
+using Grupparbete1.MapData;
 
 namespace Grupparbete1
 {
@@ -13,14 +14,18 @@ namespace Grupparbete1
     public class Game
     {
         public Map GameMap { get; set; }
+        private MapGenerator _mapGen;
 
         public Game(int width, int height)
         {
-            GameMap = new Map(width, height);
+            //GameMap = new Map(width, height);
+            _mapGen = new MapGenerator(new Map(width, height), 10, 5, 12);
         }
 
         public void Init()
         {
+            GameMap = _mapGen.Generate();
+            GameMap.Init();
         }
 
         /// <summary>

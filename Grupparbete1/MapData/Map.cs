@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Grupparbete1.GameObjects;
 using Grupparbete1.Tiles;
 
-namespace Grupparbete1
+namespace Grupparbete1.MapData
 {
     /// <summary>
     /// Innehåller all information om spelkartan, och rendererar den bild som visas för spelaren.
@@ -14,7 +14,9 @@ namespace Grupparbete1
     public class Map
     {
         // Själva spelkartan i form av Tiles, där varje Tile innehåller information om den går att gå på eller inte, och vilket tecken som representerar den rutan.
-        public TileBase[][] TileGrid { get; set; } 
+        public TileBase[][] TileGrid { get; private set; } 
+
+        public List<Room> Rooms { get; private set; }
 
         // Alla spelobjekt som existerar på planen, dvs spelaren, alla fiender och items.
         public List<GameObject> GameObjects { get; set; }
@@ -38,28 +40,27 @@ namespace Grupparbete1
             TileGrid = new TileBase[width][];
             GameObjects = new List<GameObject>();
 
+            Rooms = new List<Room>();
+
             for(int x = 0; x < width; x++)
             {
               TileGrid[x] = new TileBase[height];
             }
-
-            Init();       
+    
         }
 
         // Genererar en ny spelkarta när spelet startas, och lägger till spelare och fiender.
         public void Init()
         {
-            FillWithFloor();
-            CreateRoomWalls(0, 0, Width - 1, Height - 1);
-            CreateRoomWalls(5, 10, 10, 5);
+            CreateEnemies(1, 1);
             Player = CreatePlayer("Player");
-            CreateEnemies(10);
             GameObjects.Add(Player);
+
             DrawMap();
         }
 
         /// <summary>
-        /// Används för att kolla om det finns ett GameObjekt av en viss typ på de angivna koordinater.
+        /// Används för att kolla om det finns ett GameObject av en viss typ på de angivna koordinater.
         /// Används bland annat när spelaren flyttas, för att kolla om det finns en fiende att attackera på den Tile som spelaren försöker gå till.
         /// </summary>
         /// <typeparam name="T">Den typ av GameObject som eftersöks.</typeparam>
@@ -71,18 +72,9 @@ namespace Grupparbete1
             return GameObjects.Where(e => e.X == x && e.Y == y && e is T).FirstOrDefault() as T;
         }
 
-        /// <summary>
-        /// Fyller hela kartan med TileFloor.
-        /// </summary>
-        private void FillWithFloor()
+        public List<T> GetAllEntitiesAtLoc<T>(Coord location) where T : GameObject
         {
-            for(int x = 0; x < Width; x++)
-            {
-                for (int y = 0; y < Height; y++)
-                {
-                    TileGrid[x][y] = new TileFloor();
-                }
-            }
+            return GameObjects.Where(e => e.X == location.X && e.Y == location.Y && e is T).ToList() as List<T>;
         }
 
         /// <summary>
@@ -97,54 +89,39 @@ namespace Grupparbete1
 
             do
             {
-                tempX = rng.Next(Width);
-                tempY = rng.Next(Height);
+                tempX = rng.Next(Rooms[0].Area.Left, Rooms[0].Area.Right);
+                tempY = rng.Next(Rooms[0].Area.Top, Rooms[0].Area.Bottom);
             } while (!TileGrid[tempX][tempY].IsWalkable);
 
             return new Player(tempX, tempY, name);
         }
 
         /// <summary>
-        /// Skapar ett antal fiender på slumpade koordinater.
+        /// Skapar ett antal fiender på slumpade koordinater i varje rum. Det högsta antalet fiender som kan skapas per rum ökar vart annat rum.
         /// </summary>
-        /// <param name="count">Antalet fiender som ska slumpas fram.</param>
-        private void CreateEnemies(int count)
+        /// <param name="countLowerBound">Det lägsta antalet fiender som kan slumpas fram i ett givet rum.</param>
+        /// /// <param name="countUpperBound">Det högsta antalet fiender som kan slumpas fram i ett givet rum.</param>
+        private void CreateEnemies(int countLowerBound, int countUpperBound)
         {
+            int count;
             int tempX;
             int tempY;
+ 
 
-            for(int i = 0; i < count; i++)
+            for(int i = 0; i < Rooms.Count; i++)
             {
-                do
-                {
-                    tempX = rng.Next(Width);
-                    tempY = rng.Next(Height);
-                } while (!TileGrid[tempX][tempY].IsWalkable);
-                GameObjects.Add(new Enemy(tempX, tempY, "Enemy"));
-            }
-        }
+                countUpperBound += i % 2 != 0 ? 1 : 0;
+                count = rng.Next(countLowerBound, countUpperBound + 1);
 
-        /// <summary>
-        /// Skapar en rektangel med väggar av angiven storlek på spelkartan.
-        /// </summary>
-        /// <param name="originColumn">Den X-koordinat som rektangeln utgår ifrån.</param>
-        /// <param name="originRow">Den Y-koordinat som rektangeln utgår ifrån.</param>
-        /// <param name="sizeX">Rektangelns bredd.</param>
-        /// <param name="sizeY">Rektangelns höjd.</param>
-        private void CreateRoomWalls(int originColumn, int originRow, int sizeX, int sizeY)
-        {
-            if(IsWithinBounds(originColumn, originRow) && IsWithinBounds(originColumn + sizeX, originRow + sizeY))
-            {
-                for(int x = originColumn; x <= originColumn + sizeX; x++)
+                for (int j = 0; j < count; j++)
                 {
-                    TileGrid[x][originRow] = new TileWall();
-                    TileGrid[x][originRow + sizeY] = new TileWall();
-                }
+                    do
+                    {
+                        tempX = rng.Next(Rooms[i].Area.Left, Rooms[i].Area.Right);
+                        tempY = rng.Next(Rooms[i].Area.Top, Rooms[i].Area.Bottom);
+                    } while (!TileGrid[tempX][tempY].IsWalkable);
 
-                for(int y = originRow; y <= originRow + sizeY; y++)
-                {
-                    TileGrid[originColumn][y] = new TileWall();
-                    TileGrid[originColumn + sizeX][y] = new TileWall();
+                    GameObjects.Add(new Enemy(tempX, tempY, "Enemy"));
                 }
             }
         }
@@ -158,6 +135,11 @@ namespace Grupparbete1
         public bool IsWithinBounds(int x, int y)
         {
             return (x >= 0 && x < Width && y >= 0 && y < Height);
+        }
+
+        public bool IsWithinBounds(Coord location)
+        {
+            return (location.X >= 0 && location.X < Width && location.Y >= 0 && location.Y < Height);
         }
 
         /// <summary>
@@ -196,7 +178,7 @@ namespace Grupparbete1
         /// </summary>
         /// <param name="actor"></param>
         /// <param name="lastLocation">Actorns förra position. Används för att uppdatera rutan med dess förra koordinater.</param>
-        public void UpdateAfterActorMove(Actor actor, Point lastLocation)
+        public void UpdateAfterActorMove(Actor actor, Coord lastLocation)
         {
             if (GameObjects.Contains(actor))
             {
@@ -207,6 +189,6 @@ namespace Grupparbete1
                 Console.SetCursorPosition(actor.X, actor.Y);
                 Console.Write(actor.Health > 0 ? actor.Glyph : TileGrid[actor.X][actor.Y].Glyph);
             }
-        }
+        }      
     }
 }

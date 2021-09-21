@@ -11,8 +11,9 @@ namespace Grupparbete1.Tiles
     /// </summary>
     public abstract class TileBase
     {
-        public bool IsWalkable { get; set; }
-        public char Glyph { get; set; }
+        public bool IsWalkable { get; protected set; }
+        public bool BlocksFOV { get; protected set; }
+        public char Glyph { get; protected set; }
         protected TileBase()
         {
         }
