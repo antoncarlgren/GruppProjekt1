@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grupparbete1
+namespace Grupparbete1.GameObjects
 {
     /// <summary>
     /// Basklass som representerar alla spelobjekt som inte är Tiles, till exempel spelaren, fiender, eller items i spelvärlden.

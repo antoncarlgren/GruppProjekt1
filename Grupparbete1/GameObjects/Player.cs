@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grupparbete1
+namespace Grupparbete1.GameObjects
 {
     public class Player : Actor
     {

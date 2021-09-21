@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grupparbete1
+namespace Grupparbete1.Engine
 {
     /// <summary>
     /// Hanterar den input som kommer från spelaren i form av tangenttryckningar. Binder metoder till de tangenter som representerar dem, till exempel piltangenterna till att flytta på Player-objektet.
