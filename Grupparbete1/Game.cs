@@ -29,7 +29,7 @@ namespace Grupparbete1
         {
             GameMap = _mapGen.Generate();
             GameMap.Init();
-            MessageLog = new MessageLog(new Coord(1, GameMap.Height + 1), 5);
+            MessageLog = new MessageLog(new Coord(1, GameMap.Height + 1), 10);
         }
 
         /// <summary>

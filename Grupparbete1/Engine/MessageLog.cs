@@ -21,6 +21,20 @@ namespace Grupparbete1.Engine
 
         }
 
+        public void Clear()
+        {
+            for (int i = 0; i <= _messages.Count; i++)
+            {
+                Console.SetCursorPosition(Position.X, Position.Y + i);
+                Console.Write(new string(' ', Console.WindowWidth));
+            }
+        }
+
+        public void ClearQueue()
+        {
+            _messages.Clear();
+        }
+
         public void Add(string message)
         {
             _messages.Enqueue(message);
@@ -30,11 +44,10 @@ namespace Grupparbete1.Engine
                 _messages.Dequeue();
             }
 
+            Clear();
+
             for(int i = 0; i < _messages.Count; i++)
             {
-                Console.SetCursorPosition(Position.X, Position.Y + i);
-                Console.Write(" ", Console.WindowWidth);
-
                 Console.SetCursorPosition(Position.X, Position.Y + i);
                 Console.Write(_messages.ToList()[i]);
             }

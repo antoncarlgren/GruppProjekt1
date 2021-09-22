@@ -25,57 +25,20 @@ namespace Grupparbete1.MapData
         public Player Player { get; set; }
 
         public RiddleTablet CurrentRiddleTablet { get; set; }
-        public Room CurrentRoom { get => Rooms.Where(r => r.Area.Contains(new Point(Player.X, Player.Y))).FirstOrDefault();  }
 
+        public Room CurrentRoom { get => Rooms.Where(r => r.Area.Contains(new Point(Player.X, Player.Y))).FirstOrDefault(); }
         public int Width { get; }
         public int Height { get; }
 
         // Används för att slumpa fram koordinater för nya spelobjekt.
-        private readonly Random rng;
-
-        private List<string> RiddleTexts = new List<string>()
-        {
-            "gåta 1",
-            "gåta 2",
-            "gåta 3"
-        };
-
-        private List<List<string>> RiddleAnswers = new List<List<string>>()
-        {
-            new List<string>()
-            {
-                "svar 1",
-                "svar 2"
-            },
-
-            new List<string>()
-            {
-                "svar 1",
-                "svar 2"
-            },
-
-            new List<string>()
-            {
-                "svar 1",
-                "svar 2"
-            },
-        };
-
-        private List<ConsoleKey> RiddleAnswerKeys = new List<ConsoleKey>()
-        {
-            ConsoleKey.D1,
-            ConsoleKey.D1,
-            ConsoleKey.D1
-        };
-
-        public List<Riddle> Riddles { get; set; }
+        private readonly Random _rng;
 
         public Map(int width, int height)
         {
             Width = width;
             Height = height;
 
-            rng = new Random();
+            _rng = new Random();
 
             TileGrid = new TileBase[width][];
             GameObjects = new List<GameObject>();
@@ -86,19 +49,11 @@ namespace Grupparbete1.MapData
             {
                 TileGrid[x] = new TileBase[height];
             }
-
-            Riddles = new List<Riddle>();
-
-            for (int i = 0; i < RiddleTexts.Count; i++)
-            {
-                Riddles.Add(new Riddle(RiddleTexts[i], RiddleAnswers[i], RiddleAnswerKeys[i]));
-            }
         }
 
         // Genererar en ny spelkarta när spelet startas, och lägger till spelare och fiender.
         public void Init()
         {
-            //CreateEnemies(1, 1);
             CreateRiddleTablets();
             Player = CreatePlayer("Player");
             GameObjects.Add(Player);
@@ -136,8 +91,8 @@ namespace Grupparbete1.MapData
 
             do
             {
-                tempX = rng.Next(Rooms[0].Area.Left, Rooms[0].Area.Right);
-                tempY = rng.Next(Rooms[0].Area.Top, Rooms[0].Area.Bottom);
+                tempX = _rng.Next(Rooms[0].Area.Left, Rooms[0].Area.Right);
+                tempY = _rng.Next(Rooms[0].Area.Top, Rooms[0].Area.Bottom);
             } while (!TileGrid[tempX][tempY].IsWalkable);
 
             return new Player(tempX, tempY, name);
@@ -158,14 +113,14 @@ namespace Grupparbete1.MapData
             {
                 countUpperBound += i % 2 != 0 ? 1 : 0;
 
-                count = rng.Next(countLowerBound, countUpperBound + 1);
+                count = _rng.Next(countLowerBound, countUpperBound + 1);
 
                 for (int j = 0; j < count; j++)
                 {
                     do
                     {
-                        tempX = rng.Next(Rooms[i].Area.Left, Rooms[i].Area.Right);
-                        tempY = rng.Next(Rooms[i].Area.Top, Rooms[i].Area.Bottom);
+                        tempX = _rng.Next(Rooms[i].Area.Left, Rooms[i].Area.Right);
+                        tempY = _rng.Next(Rooms[i].Area.Top, Rooms[i].Area.Bottom);
                     } while (!TileGrid[tempX][tempY].IsWalkable);
 
                     GameObjects.Add(new Enemy(tempX, tempY, "Enemy"));
@@ -177,18 +132,23 @@ namespace Grupparbete1.MapData
         {
             int tempX;
             int tempY;
+            var riddles = Riddle.Generate();
 
             for (int i = 0; i < Rooms.Count; i++)
             {
                 do
                 {
-                    tempX = rng.Next(Rooms[i].Area.Left, Rooms[i].Area.Right);
-                    tempY = rng.Next(Rooms[i].Area.Top, Rooms[i].Area.Bottom);
+                    tempX = _rng.Next(Rooms[i].Area.Left, Rooms[i].Area.Right);
+                    tempY = _rng.Next(Rooms[i].Area.Top, Rooms[i].Area.Bottom);
                 } while (!TileGrid[tempX][tempY].IsWalkable);
 
-                if (i < Riddles.Count)
+                if (i < riddles.Count)
                 {
-                    Rooms[i].Tablet = new RiddleTablet(tempX, tempY, Riddles[i]);
+                    var riddleIndex = riddles.Count <= 0 ? 0 : _rng.Next(riddles.Count);
+
+                    Rooms[i].Tablet = new RiddleTablet(tempX, tempY, riddles[riddleIndex]);
+                    riddles.RemoveAt(riddleIndex);
+
                     GameObjects.Add(Rooms[i].Tablet);
                 }
             }

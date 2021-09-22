@@ -81,6 +81,7 @@ namespace Grupparbete1.MapData
             if (originLoc.Y == targetLoc.Y)
             {
                 CreateHorizontalCorridor(originLoc, targetLoc);
+                origin.ExitDoor = CreateDoor(originLoc);
                 return;
             }
             else
