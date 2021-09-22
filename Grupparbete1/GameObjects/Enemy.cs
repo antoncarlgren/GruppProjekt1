@@ -11,7 +11,7 @@ namespace Grupparbete1.GameObjects
     /// </summary>
     public class Enemy : Actor
     {
-        public Enemy(int x, int y, string name) : base(x, y, name, 'X', 10, 2, 10)
+        public Enemy(int x, int y, string name) : base(x, y, name, 'E', 10, 2, 10)
         {
             
         }

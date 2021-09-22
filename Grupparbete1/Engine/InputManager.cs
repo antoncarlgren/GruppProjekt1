@@ -22,19 +22,40 @@ namespace Grupparbete1.Engine
             { ConsoleKey.RightArrow, new Coord(1, 0)}
         };
 
+        private static List<ConsoleKey> guessKeys = new List<ConsoleKey>()
+        {
+            ConsoleKey.D1,
+            ConsoleKey.D2,
+            ConsoleKey.D3,
+            ConsoleKey.D4
+        };
+
         /// <summary>
         /// Kontrollerar vilken tangent som spelaren tryckt på, och kör kod beroende på input.
         /// </summary>
         /// <param name="input">Den tangent som spelaren trycker på, via Console.ReadKey</param>
-        public static void ProcessInput(ConsoleKey input)
+        public static void ProcessInput(ConsoleKeyInfo input)
         {
-            if (DirectionPairs.Keys.Contains(input))
+            switch (Program.Game.CurrentMode)
             {
-                Program.Game.GameMap.Player.MoveBy(DirectionPairs[input].X, DirectionPairs[input].Y);
-            }
-            else
-            {
-                return;
+                case ControlMode.Movement:
+                    if (DirectionPairs.Keys.Contains(input.Key))
+                    {
+                        Program.Game.GameMap.Player.MoveBy(DirectionPairs[input.Key].X, DirectionPairs[input.Key].Y);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    break;
+                case ControlMode.RiddleInput:
+                    if(guessKeys.Contains(input.Key))
+                    {
+                        Program.Game.GameMap.CurrentRiddleTablet.Riddle.Guess(input.Key);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }

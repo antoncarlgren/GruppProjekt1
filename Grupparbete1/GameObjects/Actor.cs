@@ -73,6 +73,7 @@ namespace Grupparbete1.GameObjects
                 {
                     // Kontrollerar om det finns en fiende på den Tile som Actorn ska flyttas till.
                     var enemy = Program.Game.GameMap.GetEntityAtLoc<Enemy>(X + deltaX, Y + deltaY);
+                    var tablet = Program.Game.GameMap.GetEntityAtLoc<RiddleTablet>(X + deltaX, Y + deltaY);
 
                     // Om det finns en fiende så attackeras den istället för att Actorn flyttas till den rutan.
                     // Annars uppdateras Actorns position till den nya positionen.
@@ -80,6 +81,12 @@ namespace Grupparbete1.GameObjects
                     {
                         Attack(enemy);
                         return true;
+                    }
+                    else if (tablet is not null)
+                    {
+                        tablet.Riddle.PrintRiddle();
+                        Program.Game.GameMap.CurrentRiddleTablet = tablet;
+                        Program.Game.CurrentMode = ControlMode.RiddleInput;
                     }
                     else
                     {

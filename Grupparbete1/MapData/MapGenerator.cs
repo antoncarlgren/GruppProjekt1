@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,7 +64,7 @@ namespace Grupparbete1.MapData
             GenerateRooms();
             CreateRoomTiles();
 
-            for(int i = 0; i < _map.Rooms.Count - 1; i++)
+            for (int i = 0; i < _map.Rooms.Count - 1; i++)
             {
                 ConnectRooms(_map.Rooms[i], _map.Rooms[i + 1]);
             }
@@ -89,6 +89,8 @@ namespace Grupparbete1.MapData
                 
                 CreateHorizontalCorridor(originLoc, new Coord(middleX, originLoc.Y));
                 CreateHorizontalCorridor(new Coord(middleX, targetLoc.Y), targetLoc);
+
+                origin.ExitDoor = CreateDoor(originLoc);
 
                 originLoc = new Coord(middleX, originLoc.Y);
                 targetLoc = new Coord(middleX, targetLoc.Y);
@@ -133,6 +135,13 @@ namespace Grupparbete1.MapData
             {
                 _map.TileGrid[origin.X][y] = new TileFloor();
             }
+        }
+
+        private TileDoor CreateDoor(Coord location)
+        {
+            var door = new TileDoor();
+            _map.TileGrid[location.X][location.Y] = door;
+            return door;
         }
 
         private void CreateRoomTiles()

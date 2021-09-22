@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Grupparbete1.GameObjects;
+using Grupparbete1.Tiles;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using Grupparbete1.GameObjects;
-using Grupparbete1.Tiles;
+using System.Drawing;
 
 namespace Grupparbete1.MapData
 {
@@ -14,7 +14,7 @@ namespace Grupparbete1.MapData
     public class Map
     {
         // Själva spelkartan i form av Tiles, där varje Tile innehåller information om den går att gå på eller inte, och vilket tecken som representerar den rutan.
-        public TileBase[][] TileGrid { get; private set; } 
+        public TileBase[][] TileGrid { get; private set; }
 
         public List<Room> Rooms { get; private set; }
 
@@ -24,11 +24,51 @@ namespace Grupparbete1.MapData
         // Det objekt som kontrolleras av spelaren.
         public Player Player { get; set; }
 
+        public RiddleTablet CurrentRiddleTablet { get; set; }
+        public Room CurrentRoom { get => Rooms.Where(r => r.Area.Contains(new Point(Player.X, Player.Y))).FirstOrDefault();  }
+
         public int Width { get; }
         public int Height { get; }
 
         // Används för att slumpa fram koordinater för nya spelobjekt.
         private readonly Random rng;
+
+        private List<string> RiddleTexts = new List<string>()
+        {
+            "gåta 1",
+            "gåta 2",
+            "gåta 3"
+        };
+
+        private List<List<string>> RiddleAnswers = new List<List<string>>()
+        {
+            new List<string>()
+            {
+                "svar 1",
+                "svar 2"
+            },
+
+            new List<string>()
+            {
+                "svar 1",
+                "svar 2"
+            },
+
+            new List<string>()
+            {
+                "svar 1",
+                "svar 2"
+            },
+        };
+
+        private List<ConsoleKey> RiddleAnswerKeys = new List<ConsoleKey>()
+        {
+            ConsoleKey.D1,
+            ConsoleKey.D1,
+            ConsoleKey.D1
+        };
+
+        public List<Riddle> Riddles { get; set; }
 
         public Map(int width, int height)
         {
@@ -42,17 +82,24 @@ namespace Grupparbete1.MapData
 
             Rooms = new List<Room>();
 
-            for(int x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
-              TileGrid[x] = new TileBase[height];
+                TileGrid[x] = new TileBase[height];
             }
-    
+
+            Riddles = new List<Riddle>();
+
+            for (int i = 0; i < RiddleTexts.Count; i++)
+            {
+                Riddles.Add(new Riddle(RiddleTexts[i], RiddleAnswers[i], RiddleAnswerKeys[i]));
+            }
         }
 
         // Genererar en ny spelkarta när spelet startas, och lägger till spelare och fiender.
         public void Init()
         {
-            CreateEnemies(1, 1);
+            //CreateEnemies(1, 1);
+            CreateRiddleTablets();
             Player = CreatePlayer("Player");
             GameObjects.Add(Player);
 
@@ -67,7 +114,7 @@ namespace Grupparbete1.MapData
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public T GetEntityAtLoc<T>(int x, int y) where T : GameObject 
+        public T GetEntityAtLoc<T>(int x, int y) where T : GameObject
         {
             return GameObjects.Where(e => e.X == x && e.Y == y && e is T).FirstOrDefault() as T;
         }
@@ -106,11 +153,11 @@ namespace Grupparbete1.MapData
             int count;
             int tempX;
             int tempY;
- 
 
-            for(int i = 0; i < Rooms.Count; i++)
+            for (int i = 0; i < Rooms.Count; i++)
             {
                 countUpperBound += i % 2 != 0 ? 1 : 0;
+
                 count = rng.Next(countLowerBound, countUpperBound + 1);
 
                 for (int j = 0; j < count; j++)
@@ -122,6 +169,27 @@ namespace Grupparbete1.MapData
                     } while (!TileGrid[tempX][tempY].IsWalkable);
 
                     GameObjects.Add(new Enemy(tempX, tempY, "Enemy"));
+                }
+            }
+        }
+
+        private void CreateRiddleTablets()
+        {
+            int tempX;
+            int tempY;
+
+            for (int i = 0; i < Rooms.Count; i++)
+            {
+                do
+                {
+                    tempX = rng.Next(Rooms[i].Area.Left, Rooms[i].Area.Right);
+                    tempY = rng.Next(Rooms[i].Area.Top, Rooms[i].Area.Bottom);
+                } while (!TileGrid[tempX][tempY].IsWalkable);
+
+                if (i < Riddles.Count)
+                {
+                    Rooms[i].Tablet = new RiddleTablet(tempX, tempY, Riddles[i]);
+                    GameObjects.Add(Rooms[i].Tablet);
                 }
             }
         }
@@ -151,15 +219,15 @@ namespace Grupparbete1.MapData
             var sb = new StringBuilder();
 
             // Itererar över varje ruta i varje rad.
-            for(int y = 0; y < Height; y++)
-            {               
+            for (int y = 0; y < Height; y++)
+            {
                 for (int x = 0; x < Width; x++)
                 {
                     // Kollar om det finns något GameObject med koordinaterna på rutan som ska renderas.
                     var gameObjectAtLoc = GetEntityAtLoc<GameObject>(x, y);
 
                     // Om det finns ett GameObject på koordinaterna så läggs objektets tecken till i StringBuildern. Om inte, så läggs tecknet för den rutan till.
-                    sb.Append(gameObjectAtLoc is null ? TileGrid[x][y].Glyph : gameObjectAtLoc.Glyph);
+                    sb.Append(gameObjectAtLoc is null ? TileGrid[x][y].Glyph : gameObjectAtLoc.Icon);
                 }
 
                 // Flyttar pekaren till den rad som ska skrivas ut.
@@ -185,10 +253,10 @@ namespace Grupparbete1.MapData
                 var gameObjectAtLoc = GetEntityAtLoc<GameObject>(lastLocation.X, lastLocation.Y);
 
                 Console.SetCursorPosition(lastLocation.X, lastLocation.Y);
-                Console.Write(gameObjectAtLoc is null ? TileGrid[lastLocation.X][lastLocation.Y].Glyph : gameObjectAtLoc.Glyph);
+                Console.Write(gameObjectAtLoc is null ? TileGrid[lastLocation.X][lastLocation.Y].Glyph : gameObjectAtLoc.Icon);
                 Console.SetCursorPosition(actor.X, actor.Y);
-                Console.Write(actor.Health > 0 ? actor.Glyph : TileGrid[actor.X][actor.Y].Glyph);
+                Console.Write(actor.Health > 0 ? actor.Icon : TileGrid[actor.X][actor.Y].Glyph);
             }
-        }      
+        }
     }
 }

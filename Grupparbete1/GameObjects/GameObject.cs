@@ -17,14 +17,14 @@ namespace Grupparbete1.GameObjects
         public string Name { get; set; }
 
         // Det tecken som representerar spelobjektet på spelkartan.
-        public char Glyph { get; set; }
+        public char Icon { get; set; }
 
-        protected GameObject(int x, int y, string name, char glyph)
+        protected GameObject(int x, int y, string name, char icon)
         {
             X = x;
             Y = y;
             Name = name;
-            Glyph = glyph;
+            Icon = icon;
         }
     }
 }
