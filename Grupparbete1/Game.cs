@@ -45,7 +45,7 @@ namespace Grupparbete1
         private void DrawMenu()
         {
             Console.Clear();
-
+            Console.WriteLine("Temple of the Bad Riddles");
             for(int i = 0; i < MenuItems.Count; i++)
             {
                 Console.WriteLine($"{(SelectedMenuItem == i ? ">" : " ")} {MenuItems[i]}");
@@ -56,7 +56,7 @@ namespace Grupparbete1
         {
             for(int i = 0; i < MenuItems.Count; i++)
             {
-                Console.SetCursorPosition(0, i);
+                Console.SetCursorPosition(0, i + 1);
                 Console.Write($"{(SelectedMenuItem == i ? ">" : " ")}");
             }
         }
