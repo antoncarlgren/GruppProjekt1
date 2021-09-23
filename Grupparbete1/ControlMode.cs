@@ -9,6 +9,7 @@ namespace Grupparbete1
     public enum ControlMode
     {
         Movement,
-        RiddleInput
+        RiddleInput,
+        Menu
     }
 }

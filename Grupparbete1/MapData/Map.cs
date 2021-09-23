@@ -142,7 +142,7 @@ namespace Grupparbete1.MapData
                     tempY = _rng.Next(Rooms[i].Area.Top, Rooms[i].Area.Bottom);
                 } while (!TileGrid[tempX][tempY].IsWalkable);
 
-                if (i < riddles.Count)
+                if (riddles.Count > 0)
                 {
                     var riddleIndex = riddles.Count <= 0 ? 0 : _rng.Next(riddles.Count);
 
@@ -187,7 +187,7 @@ namespace Grupparbete1.MapData
                     var gameObjectAtLoc = GetEntityAtLoc<GameObject>(x, y);
 
                     // Om det finns ett GameObject på koordinaterna så läggs objektets tecken till i StringBuildern. Om inte, så läggs tecknet för den rutan till.
-                    sb.Append(gameObjectAtLoc is null ? TileGrid[x][y].Glyph : gameObjectAtLoc.Icon);
+                    sb.Append(gameObjectAtLoc is null ? TileGrid[x][y].Icon : gameObjectAtLoc.Icon);
                 }
 
                 // Flyttar pekaren till den rad som ska skrivas ut.
@@ -213,9 +213,9 @@ namespace Grupparbete1.MapData
                 var gameObjectAtLoc = GetEntityAtLoc<GameObject>(lastLocation.X, lastLocation.Y);
 
                 Console.SetCursorPosition(lastLocation.X, lastLocation.Y);
-                Console.Write(gameObjectAtLoc is null ? TileGrid[lastLocation.X][lastLocation.Y].Glyph : gameObjectAtLoc.Icon);
+                Console.Write(gameObjectAtLoc is null ? TileGrid[lastLocation.X][lastLocation.Y].Icon : gameObjectAtLoc.Icon);
                 Console.SetCursorPosition(actor.X, actor.Y);
-                Console.Write(actor.Health > 0 ? actor.Icon : TileGrid[actor.X][actor.Y].Glyph);
+                Console.Write(actor.Health > 0 ? actor.Icon : TileGrid[actor.X][actor.Y].Icon);
             }
         }
     }

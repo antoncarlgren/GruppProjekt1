@@ -15,7 +15,7 @@ namespace Grupparbete1.Tiles
         {
             IsWalkable = true;
             BlocksFOV = false;
-            Glyph = '.';
+            Icon = '.';
         }
     }
 }

@@ -22,23 +22,23 @@ namespace Grupparbete1
 
             List<string> riddleTexts = new List<string>()
             {
-                "gåta 1",
-                "gåta 2",
-                "gåta 3"
+                "I am always hungry and will die if not fed, but whatever I touch will soon turn red. What am I?",
+                "I have lakes with no water, mountains with no stone, and cities with no buildings. What am I?",
+                "I have eyes but I can't see. I live in the dark until you need me. What am I?"
             };
 
             List<ConsoleKey> riddleAnswerKeys = new List<ConsoleKey>()
             {
+                ConsoleKey.D2,
                 ConsoleKey.D1,
-                ConsoleKey.D1,
-                ConsoleKey.D1
+                ConsoleKey.D2
             };
 
             List<string> riddleAnswerStrings = new List<string>()
             {
-                "svar#svar#svar#svar",
-                "svar#svar#svar#svar",
-                "svar#svar#svar#svar"
+                "Probably not a cat#Fire#Almost a dog?",
+                "A map#A desert",
+                "Batman#A potato"
             };
 
             if (riddleTexts.Count == riddleAnswerKeys.Count && riddleTexts.Count == riddleAnswerStrings.Count)
@@ -77,18 +77,18 @@ namespace Grupparbete1
             {
                 Program.Game.MessageLog.Add($"{i + 1}. {answerOptions[i]}");
             }
+
+            Console.SetCursorPosition(1, Console.GetCursorPosition().Top + 1);
         }
         public void Guess(ConsoleKey input)
         {
-            Console.SetCursorPosition(1, Console.GetCursorPosition().Top + 5);
-            Console.CursorVisible = true;
-
             if (input == _correctAnswerKey)
             {
                 Program.Game.MessageLog.Add("Rätt svar!");
                 Program.Game.CurrentMode = ControlMode.Movement;
                 Program.Game.GameMap.CurrentRoom.ExitDoor.Open();
                 Program.Game.GameMap.GameObjects.Remove(Program.Game.GameMap.CurrentRiddleTablet);
+                
             }
             else
             {
@@ -96,7 +96,6 @@ namespace Grupparbete1
                 PrintRiddle();
             }
 
-            Console.CursorVisible = false;
         }
     }
 }

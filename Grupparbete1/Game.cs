@@ -18,18 +18,47 @@ namespace Grupparbete1
         private MapGenerator _mapGen;
         public ControlMode CurrentMode { get; set; }
 
+        public int SelectedMenuItem { get; set; }
+        public List<string> MenuItems { get; }
+
         public Game(int width, int height)
         {
             //GameMap = new Map(width, height);
             _mapGen = new MapGenerator(new Map(width, height), 10, 5, 12);
-            CurrentMode = ControlMode.Movement;
+            CurrentMode = ControlMode.Menu;
+
+            MenuItems = new List<string>()
+            {
+                "Start Game",
+                "Exit"
+            };
+
         }
 
         public void Init()
         {
+            DrawMenu();
             GameMap = _mapGen.Generate();
-            GameMap.Init();
             MessageLog = new MessageLog(new Coord(1, GameMap.Height + 1), 10);
+        }
+
+        private void DrawMenu()
+        {
+            Console.Clear();
+
+            for(int i = 0; i < MenuItems.Count; i++)
+            {
+                Console.WriteLine($"{(SelectedMenuItem == i ? ">" : " ")} {MenuItems[i]}");
+            }
+        }
+
+        public void MoveMenuCursor()
+        {
+            for(int i = 0; i < MenuItems.Count; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write($"{(SelectedMenuItem == i ? ">" : " ")}");
+            }
         }
 
         /// <summary>

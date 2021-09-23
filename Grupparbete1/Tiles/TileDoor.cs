@@ -12,14 +12,14 @@ namespace Grupparbete1.Tiles
         {
             IsWalkable = false;
             BlocksFOV = true;
-            Glyph = '/';
+            Icon = '/';
         }
 
         public void Open()
         {
             IsWalkable = true;
             BlocksFOV = false;
-            Glyph = '.';
+            Icon = '.';
         }
     }
 }

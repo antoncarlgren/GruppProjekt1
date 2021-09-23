@@ -13,7 +13,7 @@ namespace Grupparbete1.Tiles
     {
         public bool IsWalkable { get; protected set; }
         public bool BlocksFOV { get; protected set; }
-        public char Glyph { get; protected set; }
+        public char Icon { get; protected set; }
         protected TileBase()
         {
         }

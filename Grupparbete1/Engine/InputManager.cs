@@ -43,10 +43,6 @@ namespace Grupparbete1.Engine
                     {
                         Program.Game.GameMap.Player.MoveBy(DirectionPairs[input.Key].X, DirectionPairs[input.Key].Y);
                     }
-                    else
-                    {
-                        return;
-                    }
                     break;
                 case ControlMode.RiddleInput:
                     if(guessKeys.Contains(input.Key))
@@ -54,6 +50,32 @@ namespace Grupparbete1.Engine
                         Program.Game.GameMap.CurrentRiddleTablet.Riddle.Guess(input.Key);
                     }
                     break;
+                case ControlMode.Menu:
+                {
+                    switch (input.Key)
+                        {
+                            case ConsoleKey.UpArrow:
+                                Program.Game.SelectedMenuItem -= Program.Game.SelectedMenuItem > 0 ? 1 : 0;
+                                Program.Game.MoveMenuCursor();
+                                break;
+                            case ConsoleKey.DownArrow:
+                                Program.Game.SelectedMenuItem += Program.Game.SelectedMenuItem < Program.Game.MenuItems.Count - 1 ? 1 : 0;
+                                Program.Game.MoveMenuCursor();
+                                break;
+                            case ConsoleKey.Enter:
+                                if(Program.Game.SelectedMenuItem == 0)
+                                {
+                                    Program.Game.GameMap.Init();                                  
+                                    Program.Game.CurrentMode = ControlMode.Movement;
+                                }
+                                else if (Program.Game.SelectedMenuItem == 1)
+                                {
+                                    Environment.Exit(0);
+                                }
+                                break;
+                        }
+                        break;
+                }
                 default:
                     break;
             }
